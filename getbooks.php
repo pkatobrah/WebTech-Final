@@ -26,19 +26,10 @@ function cors() {
 header('Content-Type: application/json');
 $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
-
-    case 'DELETE':
-        $id = $_GET['id'];
-        
-        $stmt = $pdo->prepare('DELETE FROM books WHERE book_id=?');
-        $stmt->execute([$id]);
-        
-        echo json_encode(['message' => 'Book deleted successfully']);
-        break;
-        default:
-        http_response_code(405);
-        echo json_encode(['error' => 'Method not allowed']);
-        break;
-
-}
+    case 'GET':
+    $stmt = $pdo->query('SELECT * FROM Books');
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode($result);
+    break;
+   }
 ?>

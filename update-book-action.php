@@ -26,19 +26,25 @@ function cors() {
 header('Content-Type: application/json');
 $method = $_SERVER['REQUEST_METHOD'];
 switch ($method) {
-
-    case 'DELETE':
-        $id = $_GET['id'];
-        
-        $stmt = $pdo->prepare('DELETE FROM books WHERE book_id=?');
-        $stmt->execute([$id]);
-        
-        echo json_encode(['message' => 'Book deleted successfully']);
+    case 'PUT':
+        try{ 
+            parse_str(file_get_contents('php://input'), $data);
+            $id = $data['id'];
+            $title = $data['title'];
+            $author = $data['author'];
+            $genre = $data['genre'];
+            $book_condition = $data['book_condition'];
+            $description = $data['description'];
+            
+            $stmt = $pdo->prepare('UPDATE books SET title=?, author=?, genre=?, book_condition=?, description=? WHERE book_id=?');
+            $stmt->execute([$title, $author, $genre, $book_condition, $description,$id ]);
+            
+            echo json_encode(['message' => 'Book update successful']);
+            }catch(Exception $e){
+            echo 'Message: ' .$e->getMessage();
+            }
         break;
-        default:
-        http_response_code(405);
-        echo json_encode(['error' => 'Method not allowed']);
-        break;
 
+       
 }
 ?>
